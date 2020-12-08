@@ -4,7 +4,7 @@
 #include <string.h>
 
 //running:-  ./q4 input1q4.txt 
-//output written in output1q4.txt 
+//output written in :- output1q4.txt 
 int main(){
 	
 	//reading into file 

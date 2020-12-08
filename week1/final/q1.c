@@ -6,6 +6,8 @@
 #include <string.h>
 #include <sys/types.h>
 
+//Usage :- ./q1 pattern filetocheck
+//here can be run sa :- ./q1 sagnik q1txtfile 
 void check_Pattern(char *argv[])
 {
     int fd,r,j=0;
@@ -22,7 +24,7 @@ void check_Pattern(char *argv[])
             }
             else
             {
-            	line[j]='\0';
+            	line[j]='\0';	
                 if(strstr(line,argv[1])!=NULL)
                 printf("Pattern is :%s\n",line);
                 memset(line,0,sizeof(line));

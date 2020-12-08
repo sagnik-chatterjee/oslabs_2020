@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-
+//Usage : ./q3
 int main(){
 	char ch='a';
 	int x=45;

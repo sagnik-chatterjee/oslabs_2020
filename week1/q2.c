@@ -1,65 +1,66 @@
-#include <stdio.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <fcntl.h>
 
-//run :- ./q2 filename 
+//Use : ./q2 filename 
 
-int main(int argc,char **argv){
-	if(argc!=2){
-		printf("Invalid Syntax ,format: ./q2 filename");
+void main (int argc, char **argv) {
+
+	// must have filename
+	if (argc != 2) {
+		printf("Invalid syntax.\nFormat: ./q2_more filename \n");
+		exit(0);
 	}
+
 	char filename[100];
+	strcpy(filename, argv[1]);
 
-	strcpy(filename,argv[1]);
+	printf("File: %s\n", filename);
 
-	 printf("File: %s\n", filename);
+	int fd = open(filename, O_RDONLY);
 
-        int fd = open(filename, O_RDONLY);
+	// check if file exists
+	if (fd == -1) {
+		printf("%s doesn't exist.\n", filename);
+		exit(0);
+	}
 
-        // check if file exists
-        if (fd == -1) {
-                printf("%s doesn't exist.\n", filename);
-                exit(0);
-        }
+	char buffer[1000] = "";
+	char c;
+	int currentLine = 1;
 
-        char buffer[1000] = "";
-        char c;
-        int currentLine = 1;
+	while (read(fd, &c, 1) == 1 && currentLine <= 20) {
+		if (c != '\n') {
+			strncat(buffer, &c, 1);
+		} else {
+			printf("Line %d: %s\n\n", currentLine, buffer);
+			buffer[0] = '\0';
+			currentLine++;
+		}
+	}
 
-        while (read(fd, &c, 1) == 1 && currentLine <= 20) {
-                if (c != '\n') {
-                        strncat(buffer, &c, 1);
-                } else {
-                        printf("Line %d: %s\n\n", currentLine, buffer);
-                        buffer[0] = '\0';
-                        currentLine++;
-                }
-        }
+	while (read(fd, &c, 1) == 1) {
+		if (c != '\n') {
+			strncat(buffer, &c, 1);
+		} else {
+			// wait for key press before printing
+			char keyPress;
+			read(0, &keyPress, 1);
 
-        while (read(fd, &c, 1) == 1) {
-                if (c != '\n') {
-        strncat(buffer, &c, 1);
-                } else {
-                        // wait for key press before printing
-                        char keyPress;
-                        read(0, &keyPress, 1);
+			printf("Line %d: %s\n", currentLine, buffer);
+			buffer[0] = '\0';
+			currentLine++;
+		}
+	}
 
-                        printf("Line %d: %s\n", currentLine, buffer);
-                        buffer[0] = '\0';
-                        currentLine++;
-                }
-        }
+	
+	char keyPress;
+	read(0, &keyPress, 1);
+	printf("Line %d: %s\n", currentLine, buffer);
 
-        // last line is left in buffer
-        char keyPress;
-        read(0, &keyPress, 1);
-        printf("Line %d: %s\n", currentLine, buffer);
+	close(fd);
 
-        close(fd);
-
-        printf("\n\nEND OF FILE!\n\n");
+	printf("\n\nEND OF FILE!\n\n");
 }
-

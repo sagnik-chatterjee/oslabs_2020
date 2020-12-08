@@ -1,3 +1,5 @@
+//Usage : ./q1 ls filename 
+
 #include<sys/stat.h>
 #include<dirent.h> 
 #include<stdio.h>

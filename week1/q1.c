@@ -6,6 +6,8 @@
 #include <string.h>
 #include <sys/types.h>
 
+//Usage :- ./q1 pattern filetocheck
+//here can be run sa :- ./q1 sagnik q1txtfile 
 void check_Pattern(char *argv[])
 {
     int fd,r,j=0;
