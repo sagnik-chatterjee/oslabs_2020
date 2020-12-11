@@ -11,13 +11,18 @@ Usage : ./q1
 #include <sys/wait.h>
 #include <unistd.h>
 
+void ChildProcess(char *message){
+	printf("Child process prints :- %s",message);
+}
+
 int main(){
 	//to block a parent process until the child completes using a 
 	//wait system call 
-
+	
 	pid_t cpid ;
 	if(fork()==0){
-		exit(0);//terminating the child process
+		printf("Fork couldn't be done\n");
+		exit(0);
 	}
 	else {
 		cpid= wait(NULL); //parent 
@@ -25,5 +30,8 @@ int main(){
 
 	printf("Parent pid = %d\n",getpid()); 
 	printf("Child  pid = %d\n",cpid);
+	
+
+
 	return 0;
 }
