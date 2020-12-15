@@ -5,14 +5,14 @@
 #include <assert.h>
 #include <sys/wait.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
 	int fd[2];
 	pid_t pid;
 	char buf[1024];
 	if(argc!=2)
 	{
-		printf("Invalid no. of arguments\n");
+		printf("[ERROR] Usage : %s <inputfile> \n",argv[0]);
 		exit(EXIT_FAILURE);
 	}
 	if(pipe(fd)==-1)
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	{
 		char ch;
 		FILE *fw;
-		fw = fopen("q4.bin", "wb");
+		fw = fopen("output.bin", "wb");
 		if (fw == NULL)
 			printf("Output binary file can't be opened\n");
 		printf("Reading in child...\n");

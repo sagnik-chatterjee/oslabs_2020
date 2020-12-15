@@ -1,61 +1,74 @@
 /*
 AUTHOR :SAGNIK CHATTERJEE
 DATE : DEC 15,2020
-USAGE : ./q4 inputfilename outputfilename
-
+USAGE : ./q4 <inputfile> <outfile>
 */
 
 
-#include <stdio.h>
+
+
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
+#include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <sys/wait.h>
 
-
-int main(int argc , char **argv) {
-	char  buffer[1024];
-	FILE* ptr;
-	if (argc < 3) {
-		printf("[ERROR] Usage : %s <filename_to_read> <filename_to_write>", argv[0]);
-		exit(1);
+int main(int argc, char **argv)
+{
+	int fd[2];
+	pid_t pid;
+	char buf[1024];
+	if(argc!=3 ){
+		printf("[ERROR] Usage : %s <inputfile> <outputfile> \n",argv[0]);
+		exit(EXIT_FAILURE);
 	}
-	ptr = fopen(argv[1], "rb");
-
-	if (ptr < 0) {
-		printf("[ERROR] Could not open files for reading.\n");
-		exit(1);
+	if(pipe(fd)==-1){
+		perror("[ERROR] Pipe Error\n");
+		exit(EXIT_FAILURE);
 	}
-	//read the data to the buffer
-
-	if (fread(buffer, sizeof(buffer), 1, ptr) < 0) {
-		printf("[ERROR] Some reading error.\n");
-		exit(1);
+	pid = fork();
+	if(pid==-1){
+		perror("[ERROR] Fork Error\n");
+		exit(EXIT_FAILURE);
 	}
-	printf("Succesfully read from the file.\n");
-	//print a series of bytes to screen
-	/*for (int i = 0; i < 1024; i++) {
-		printf("%x", buffer[i]);
+	else if(pid==0){
+        //for child process write into binary file
+		char ch;
+		FILE *fw;
+		fw = fopen(argv[2], "wb");
+		if (fw == NULL){
+			printf("[ERROR] Output binary file can't be opened\n");
+            exit(EXIT_FAILURE);
+        }
+        printf("[STATUS] Reading in child. \n");
+		close(fd[1]); //close unused write end
+		while(read(fd[0], &buf, strlen(buf))>0){
+			fputs(buf, fw);
+		}
+		close(fd[0]);
+		printf("[STATUS] Child ended,closing .\n");
+		fclose(fw);
+		exit(EXIT_SUCCESS);
 	}
-	*/
-
-	FILE* write_ptr ;
-
-	write_ptr = fopen(argv[2], "wb");
-	if (write_ptr < 0) {
-		printf("[ERROR] Could not open file for writing.\n");
-		exit(1);
+	else{
+        //parent process read from the bianry file 
+		char ch;
+		FILE *fw = fopen(argv[1], "rb");
+		if (fw == NULL){
+			printf("[ERROR] Input binary file can't be opened\n");
+            exit(EXIT_FAILURE);
+        }
+        printf("[STATUS] Writing in parent...\n");
+		close(fd[0]); //close unused read end
+		while(fgets(buf, 1024, fw) !=NULL){
+			write(fd[1], buf, strlen(buf));
+		}
+		close(fd[1]); //reader will see EOF
+		wait(NULL); //wait for child to terminate
+		printf("[STATUS] Parent ended,closing.\n");
+		fclose(fw);
+		exit(EXIT_SUCCESS);
 	}
-
-	if (fwrite(buffer, sizeof(buffer), 1, write_ptr) < 0) {
-		printf("[ERROR] Some writing error \n");
-		exit(1);
-	}
-	printf("Succesfully wrote the result to file %s\n", argv[2]);
-	printf("\n----DONE------\n");
-
-	fclose(write_ptr);
-	fclose(ptr);
 	return 0;
 }
