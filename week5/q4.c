@@ -1,9 +1,10 @@
 /*
 AUTHOR :SAGNIK CHATTERJEE
-DATE : DEC 14,2020
+DATE : DEC 15,2020
 USAGE : ./q4 inputfilename outputfilename
 
 */
+
 
 #include <stdio.h>
 #include <stdlib.h>

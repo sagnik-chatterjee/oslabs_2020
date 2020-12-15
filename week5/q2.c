@@ -1,48 +1,54 @@
 /*
 AUTHOR :SAGNIK CHATTERJEE
-DATE : DEC 14,2020
-USAGE : ./q2
+DATE : DEC 15,2020
+USAGE : ./q2 
 
 */
-
-#include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <limits.h>
+#include <stdio.h>
 
-#define msgsize 50
 
-int main() {
-	int fd[2]; //the arg for the pipe
+int main(){
+    int pfd[2];
+    pid_t cpid;
+    int buff;
 
-	pid_t pid;
-	char *mess1 = "hello ,this is message1";
-	char *mess2 = "hello this is message2";
-	char *mess3 = "hello this is message3";
-	int nbytes;
-	char inbuf[msgsize];
+    if(pipe(pfd)==-1){
+        perror("[STATUS] Pipe failure\n");
+        exit(EXIT_FAILURE);
+    }
 
-	if (pipe(fd) < 0) {
-		printf("[ERROR] Pipe could not be created.\n");
-		exit(1);
-	}
-	pid = fork();
-	//creating from a pipe
-	if (pid > 0) {
-		//parent process
-		//write from a pipe
-		write(fd[1], mess1, msgsize);
-		write(fd[2], mess2, msgsize);
-		write(fd[3], mess3, msgsize);
+    cpid = fork();
+    if(cpid==-1){
+        perror("[STATUS] Fork error\n");
+        exit(EXIT_FAILURE);
+    }
+    else{
+        printf("[STATUS] Pipe created\n");
+    }
+    if(cpid==0){
+        //child process reads from pipe    
+        close(pfd[1]);
+        int y;
+        read(pfd[0],&y,sizeof(int));
+        close(pfd[0]);
+        printf("[STATUS] Got %d from the parent\n",y);
+        }
+    else{
+      //parent writes to child
+            close(pfd[0]);
+            printf("[STATUS] Enter a number\n");
+            scanf("%d",&buff);
+            write(pfd[1],&buff,sizeof(int));
+            close(pfd[1]);
+            wait(NULL);
+            exit(EXIT_SUCCESS);
+        }
 
-	}
-	else {
-		//for child process
-		//close(fd[1]);
-		while ((nbytes = read(fd[0], inbuf, msgsize)) > 0)
-			printf("% s\n", inbuf);
-		if (nbytes != 0)
-			exit(2);
-		printf("[STATUS] Finished reading\n");
-	}
 }
-
