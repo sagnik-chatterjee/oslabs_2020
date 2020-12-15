@@ -29,7 +29,7 @@ int main() {
 	msgid = msgget(key, 0666 | IPC_CREAT);
 	message.mesg_type = 1;
 
-	printf("[STATUS] Enter the data to send : ");
+	printf("[STATUS] Enter the number to send to check for pallindrome : ");
 	fgets(message.mesg_text, max, stdin);
 
 	// msgsnd to send message

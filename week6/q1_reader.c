@@ -9,7 +9,7 @@ USAGE :
 #include <stdlib.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
-#include <stdbool.h>
+#include <string.h>
 
 #define max 256
 
@@ -18,21 +18,25 @@ struct msg_buffer {
 	char mesg_text[100];
 } message;
 
-bool checkPalindrome(int data) {
-	int number2 = data;
-
-	int temp = 0;
-	while (data != 0) {
-		int  p = data % 10;
-		temp = temp * 10 + data;
-		data = data / 10;
-	}
-	if (temp == number2) {
-		return true;
-	}
-	return false;
-
-}
+int reverseDigits(int num) 
+{ 
+    int rev_num = 0; 
+    while (num > 0) { 
+        rev_num = rev_num * 10 + num % 10; 
+        num = num / 10; 
+    } 
+    return rev_num; 
+} 
+  
+int isPalindrome(int n) 
+{ 
+	int rev_num = reverseDigits(n); 
+  
+    if (rev_num == n) 
+        return 1; 
+    else
+        return 0; 
+} 
 
 
 int main() {
@@ -51,14 +55,16 @@ int main() {
 
 	//check if the messagedata is pallindrome or not
 
-	printf("[STATUS] Data Received is :%s\n", message.mesg_text);
-	if (checkPalindrome(atoi(message.mesg_text))) {
+	int number = atoi(message.mesg_text);
+	printf("[STATUS] Data Received is :%d\n", number);
+	if (isPalindrome(number)==1) {
 		//yes this is a palindrome
-		printf("[STATUS] It is a palindrome number.\n");
+		printf("[STATUS] %d is a palindrome number.\n",number);
 	}
 	else {
 		printf("[STATUS] No this is not a palindrome number.\n");
 	}
 	//destroy the message queue
 	msgctl(msgid, IPC_RMID, NULL);
+	return 0;
 }
