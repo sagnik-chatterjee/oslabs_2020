@@ -2,7 +2,6 @@
 AUTHOR : SAGNIK CHATTERJEE
 DATE : DEC 15,2020
 USAGE : ./q1r
-
 */
 
 #include <stdio.h>
