@@ -1,7 +1,7 @@
 /*
 AUTHOR : SAGNIK CHATTERJEE
 DATE : DEC 15,2020
-USAGE :
+USAGE : ./q1r
 
 */
 
