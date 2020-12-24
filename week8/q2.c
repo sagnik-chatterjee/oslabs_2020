@@ -9,7 +9,7 @@ int arr[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 int sum[]={0,0,0,0};
 int part=0;
 
-void * sum_array(){
+void * sum_array(void *args){
 	int thread_part =part++;
 	//using 4 threads so diviing into 4 parts 
 	for(int i=thread_part * (size/4);i<(thread_part+1)*(size/4);i++){
@@ -29,7 +29,7 @@ int main(){
 
 	//create the 4 threads 
 	for(int i=0;i<max_threads;i++){
-		pthread_create(&threads[i],NULL,sum_array,(void*)NULL);
+		pthread_create(&threads[i],NULL,sum_array,(void*)arr);
 	}
 
 	//wait for all threads to complete before joining 

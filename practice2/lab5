@@ -1,0 +1,26 @@
+1. Pipes: 
+	1. Pipes are unideirectional byte streams that connect the statndarad output from one process into the standartad input of another process.A pipe is created using the systemcall pipe which returns a pair of file descriptors.
+	2 .
+	 int fd[2];
+	 int res = pipe(fd[0],fd[1]);
+
+	 fd[0] is set up for reading 
+	 fd[1] is se t up for writing 
+
+	3. Working of pipe :
+		1. FIrst a process creates a pipe and then forks to create a copy of itself.
+		2. the parent process closes the read end of the pipe.
+		3. the child process closes the write end of the pipe 
+		4. fork systemcall creates a copy of the process that was executing.
+		5. the process which executes the fork is called the parent process and the new process is created is called the child process.
+
+2. Named Pipes :FIFO 
+Pipes can share data between related process i.e process that have been started from a common ancestor process.
+
+Named pipe is a special type of file that exists as a name in the file system but behaves like the unnamed pipe .
+
+mkfifo fiflename is used to make a named pipes 
+
+looking for pipe in 
+ls -lF /tmp/my_fifo
+
